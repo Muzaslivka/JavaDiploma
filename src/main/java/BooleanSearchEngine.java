@@ -43,6 +43,6 @@ public class BooleanSearchEngine implements SearchEngine {
 
     @Override
     public List<PageEntry> search(String word) {
-        return wordByPages.get(word);
+        return wordByPages.get(word.toLowerCase());
     }
 }
