@@ -1,5 +1,3 @@
-import com.google.gson.Gson;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,14 +11,13 @@ public class Client {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        Gson gson = new Gson();
-        System.out.println("Поиск по слову в pdf - файлах");
+        System.out.println("Поиск по словам в PDF - файлах");
         while (true) {
             try (Socket clientSocket = new Socket(HOST, PORT);
                  PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                  BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))
             ) {
-                System.out.println("Введи слово для поиска:");
+                System.out.println("Введи слова для поиска или end для завершения работы:");
                 String input = sc.nextLine();
                 if (input.equals("end")) {
                     out.println("end");
@@ -32,7 +29,9 @@ public class Client {
                     System.out.println(answerServer.replace("#", "\n"));
                 }
             } catch (IOException e) {
+                System.out.println("Не могу подключиться к серверу");
                 System.out.println(e.getMessage());
+                break;
             }
         }
     }
