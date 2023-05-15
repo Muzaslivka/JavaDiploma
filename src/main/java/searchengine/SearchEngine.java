@@ -1,3 +1,7 @@
+package searchengine;
+
+import searchengine.PageEntry;
+
 import java.util.List;
 
 public interface SearchEngine {

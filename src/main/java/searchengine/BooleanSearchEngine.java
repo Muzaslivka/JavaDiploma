@@ -1,24 +1,28 @@
+package searchengine;
+
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
+import searchengine.PageEntry;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BooleanSearchEngine implements SearchEngine {
     Map<String, List<PageEntry>> wordByPages = new HashMap<>();
+    List<String> stopWords;
 
-    public BooleanSearchEngine(File pdfsDir) throws IOException {
+    public BooleanSearchEngine(File pdfsDir, File stopWordsFile) throws IOException {
         File[] pdfFiles = pdfsDir.listFiles();
         for (File pdfFile : pdfFiles != null ? pdfFiles : new File[0]) {
             PdfDocument pdfDoc = new PdfDocument(new PdfReader(pdfFile));
             int countPages = pdfDoc.getNumberOfPages();
             for (int i = 1; i <= countPages; i++) {
                 PdfPage pdfPage = pdfDoc.getPage(i);
-                String text = PdfTextExtractor.getTextFromPage(pdfPage);
-                String[] words = text.split("\\P{IsAlphabetic}+");
+                String textFromPage = PdfTextExtractor.getTextFromPage(pdfPage);
+                String[] words = textFromPage.split("\\P{IsAlphabetic}+");
                 Map<String, Integer> freqByWord = new HashMap<>();
                 for (String word : words) {
                     if (word.isEmpty()) {
@@ -32,31 +36,45 @@ public class BooleanSearchEngine implements SearchEngine {
                     if (wordByPages.containsKey(word)) {
                         wordByPages.get(word).add(pageEntry);
                     } else {
-                        List<PageEntry> list = new ArrayList<>();
-                        list.add(pageEntry);
-                        wordByPages.put(word, list);
+                        List<PageEntry> newList = new ArrayList<>();
+                        newList.add(pageEntry);
+                        wordByPages.put(word, newList);
                     }
                 }
             }
         }
+        stopWords = addStopWordsFromFile(stopWordsFile);
+    }
+
+    private List<String> addStopWordsFromFile(File file) {
+        List<String> fileInfo = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            fileInfo = reader.lines().collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fileInfo;
     }
 
     @Override
     public List<PageEntry> search(String word) {
-        List<PageEntry> list = wordByPages.get(word.toLowerCase().trim());
+        List<PageEntry> resultList = wordByPages.get(word.toLowerCase().trim());
         try {
-            Collections.sort(list);
+            Collections.sort(resultList);
         } catch (NullPointerException e) {
-            return list;
+            return resultList;
         }
-        return list;
+        return resultList;
 
     }
 
-    public List<PageEntry> searchWords(String[] words) {
+    public List<PageEntry> searchWords(Set<String> words) {
         Map<FilePage, Integer> filePageByCount = new HashMap<>();
         List<PageEntry> resultList = new ArrayList<>();
         for (String word : words) {
+            if (words.size() > 1 && stopWords.contains(word)) {
+                continue;
+            }
             List<PageEntry> listPageEntry = search(word);
             if (listPageEntry == null) {
                 break;

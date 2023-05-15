@@ -1,3 +1,5 @@
+package searchengine;
+
 public class PageEntry implements Comparable<PageEntry> {
     private final String pdfName;
     private final int page;
@@ -28,6 +30,6 @@ public class PageEntry implements Comparable<PageEntry> {
 
     @Override
     public String toString() {
-        return "Файл: " + pdfName + ", страница: " + page + ", Кол: " + count;
+        return "Файл: " + pdfName + ", Стр: " + page + ", Кол: " + count;
     }
 }
