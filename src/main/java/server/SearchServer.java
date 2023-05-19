@@ -41,7 +41,7 @@ public class SearchServer {
                         StringBuilder sb = new StringBuilder();
                         for (PageEntry pageEntry : resultList) {
                             sb.append(gson.toJson(pageEntry));
-                            sb.append("#");
+                       
                         }
                         String answerServer = sb.toString();
                         out.println(answerServer);
