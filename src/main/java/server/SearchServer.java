@@ -42,7 +42,7 @@ public class SearchServer {
                         for (PageEntry pageEntry : resultList) {
                             sb.append(gson.toJson(pageEntry)).append("\n");
                         }
-                        out.println(sb.toString());
+                        out.println(sb);
                     }
                 }
             }
