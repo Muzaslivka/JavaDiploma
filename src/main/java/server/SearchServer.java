@@ -40,9 +40,9 @@ public class SearchServer {
                     } else {
                         StringBuilder sb = new StringBuilder();
                         for (PageEntry pageEntry : resultList) {
-                            sb.append(pageEntry.getPdfName()).append("\n");
+                            sb.append(gson.toJson(pageEntry)).append("\n");
                         }
-                        out.println(gson.toJson(resultList));
+                        out.println(sb.toString());
                     }
                 }
             }
