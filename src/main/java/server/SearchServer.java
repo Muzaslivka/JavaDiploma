@@ -40,9 +40,11 @@ public class SearchServer {
                     } else {
                         StringBuilder sb = new StringBuilder();
                         for (PageEntry pageEntry : resultList) {
-                            sb.append(gson.toJson(pageEntry)).append("\n");
+                            sb.append(gson.toJson(pageEntry) + " ");
+
                         }
-                        out.println(sb);
+                        String answerServer = sb.toString();
+                        out.println(answerServer);
                     }
                 }
             }

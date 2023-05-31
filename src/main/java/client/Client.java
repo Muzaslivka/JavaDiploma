@@ -28,7 +28,7 @@ public class Client {
                 } else {
                     out.println(input);
                     String answerServer = in.readLine();
-                    System.out.println(answerServer.replace("#", "\n"));
+                    System.out.println(answerServer);
                 }
             } catch (IOException e) {
                 System.out.println("Не могу подключиться к серверу");
